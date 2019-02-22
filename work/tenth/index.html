@@ -26,6 +26,83 @@
     </div>
     <script src="../../common/js/jquery.js"></script>
     <script>
+      $(function(){
+        var nextWord = "", word = "";
+        pageNum = 0;
+
+        $('.search__btn').on('click', function(){
+          SearchFunction();
+        });
+
+        function SearchFunction() {
+          word = $('#js-search-word').val();
+          First();
+          AjaxFunction();
+        };
+
+        function First() {
+          if(word == nextWord) {
+            pageNum++;
+          }else if(word != nextWord){
+            $('.comment').remove();
+            $('.lists').empty();
+            nextWord = word;
+            pageNum = 1;
+          }
+        };
+
+        function AjaxFunction() {
+          $.ajax({
+          url: 'https://app.rakuten.co.jp/services/api/BooksTotal/Search/20130522',
+          type: 'GET',
+          datatype: 'json',
+          data: {
+            applicationId: '1019399324990976605',
+            booksGenreId: '001',
+            keyword: word,
+            page: pageNum,
+            hits: 20
+          }
+          }).done(function(data) {
+            LoadComplete(data);
+          }).fail(function(jqXHR, exception) {
+            LoadFailed(jqXHR, exception)
+          });
+        };
+
+        function LoadComplete(data) {
+          if(data.count > 0) {
+            var tmp = "";
+            $.each(data.Items, function(i,item) {
+             tmp += "<li class='lists__item'>" +
+                       "<div class='lists__item__inner'>" +
+                         "<a href='"+ item.Item.itemUrl +"' class='lists__item__link' target='_blank'>" +
+                           "<img src='" + item.Item.mediumImageUrl + "' class='lists__item__img' alt=''>" +
+                           "<p class='lists__item__detail'>作品名：" + item.Item.title + "</p>" +
+                           "<p class='lists__item__detail'>作者　：" + item.Item.author +"</p>" +
+                           "<p class='lists__item__detail'>出版社：" + item.Item.publisherName + "</p>" +
+                         "</a>" +
+                       "</div>" +
+                      "</li>";
+            });
+            $('.lists').prepend(tmp);
+          }else{
+            $('.comment').remove();
+            $('.lists').before('<div class="comment"><P class="message">検索結果が見つかりませんでした。<br>別のキーワードで検索して下さい。</p></div>');
+          }
+        }
+        function LoadFailed(jqXHR, exception) {
+          var msg = "";
+          if(jqXHR.status == 0){
+            msg = "インターネットに接続してください。";
+          }else if(jqXHR.status === 429) {
+            msg = "連打しすぎ！";
+          }else{
+            msg = "不明なエラー";
+          }
+          alert(msg);
+        }
+      });
       // 楽天ブックスの総合検索APIを使って製作してください。
       // answerの挙動を良く見てね！
       //

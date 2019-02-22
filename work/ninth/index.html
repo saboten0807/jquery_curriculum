@@ -45,6 +45,18 @@
       // </li>
       //
       // このテンプレートに取得してきたオブジェクトを流し込みます。
+      $.ajax({
+        url: './data.json'
+      })
+      .done(function(data) {
+        for(var i = 0; i < data.colorsArray.length; i++){
+          $('.colorList').append('<li class="colorList__item"><p class="colorList__title" style="background-color: ;"></p></li>');
+          $('.colorList__title').eq(i).css('background-color',data.colorsArray[i].hexValue).prepend(data.colorsArray[i].colorName);
+          console.log(data.colorsArray[i].hexValue);
+          console.log($('.colorList__title').index());
+          console.log(i);
+        }
+      });
     </script>
   </body>
 </html>

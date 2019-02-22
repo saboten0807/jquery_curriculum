@@ -34,6 +34,25 @@
       // .data() 要素のdata属性を取得します。
       // .width() 要素の幅を取得します。
       // .length 要素の個数を取得します。
+      $(function(){
+        var slides = [0, -600, -1200, -1800],
+            countSlide = 0;
+            $('.is-next').on('click', function(){
+              countSlide++;
+              countSlide == 4? countSlide -= 4: countSlide += 0;
+              // console.log(slides[countSlide]);
+              $('.slider-area').children('ul').animate({
+                left: 'slides[countSlide]' + 'px'
+              },2000);
+              console.log(countSlide);
+            });
+            $('.is-prev').on('click', function(){
+              countSlide--;
+              countSlide == -4? countSlide += 4: countSlide -= 0;
+              console.log(countSlide);
+            });
+
+      });
     </script>
   </body>
 </html>
